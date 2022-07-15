@@ -2,8 +2,6 @@
 
 set -euxo pipefail
 
-bq help > /dev/null
-
 time cat query.txt | bq query \
   --quiet \
   --nouse_legacy_sql \
