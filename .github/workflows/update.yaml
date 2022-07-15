@@ -38,6 +38,8 @@ jobs:
 
         ./update.sh
 
+        unset -e
+
         # If licenses.csv has changed, commit it.
         git diff-index HEAD | grep licenses.csv$
         if [[ $? -eq 0 ]]; then
