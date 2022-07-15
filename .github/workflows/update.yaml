@@ -31,6 +31,11 @@ jobs:
         project_id: jason-chainguard
 
     - run: |
+        # The first time it's run, bq poops out a bunch of setup stuff to
+        # stdout, which we don't want in our CSV, so we dry-run the query
+        # to hopefully get that out of the way.
+        cat query.txt | bq query --dry_run=true
+
         ./update.sh
 
         # If licenses.csv has changed, commit it.
