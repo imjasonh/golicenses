@@ -12,7 +12,7 @@ time cat query.txt | bq query \
 head licenses.csv
 wc -l licenses.csv
 
-gzip -f -k licenses.csv
+gzip -f licenses.csv
 
 go build -o out ./cmd/golicenses-example
 ls -lh out licenses.*
