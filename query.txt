@@ -9,4 +9,4 @@ WHERE
   AND ARRAY_LENGTH(Licenses) != 0
   AND Name != ""
 GROUP BY Name, lic
-ORDER BY Name ASC
+ORDER BY Name, lic ASC
