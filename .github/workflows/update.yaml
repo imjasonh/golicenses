@@ -38,7 +38,7 @@ jobs:
 
         ./update.sh
 
-        unset -e
+        set +e
 
         # If licenses.csv has changed, commit it.
         git diff-index HEAD | grep licenses.csv$
