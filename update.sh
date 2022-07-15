@@ -4,6 +4,7 @@ set -euxo pipefail
 
 time cat query.txt | bq query --nouse_legacy_sql --format=csv --headless=true --max_rows=10000000 > licenses.csv
 
+head licenses.csv
 wc -l licenses.csv
 
 gzip -f -k licenses.csv
