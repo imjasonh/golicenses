@@ -45,7 +45,7 @@ func Get(p string) (string, error) {
 			return
 		}
 		r := csv.NewReader(gr)
-		r.FieldsPerRecord = 3
+		r.FieldsPerRecord = 2
 		for {
 			rec, err := r.Read()
 			if err == io.EOF {
