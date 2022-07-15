@@ -1,6 +1,7 @@
 # `golicenses`
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/imjasonh/golicenses.svg)](https://pkg.go.dev/github.com/imjasonh/golicenses)
+[![Update](https://github.com/imjasonh/golicenses/actions/workflows/update.yaml/badge.svg)](https://github.com/imjasonh/golicenses/actions/workflows/update.yaml)
 
 This is an **experimental** package to lookup the license for a Go package.
 
