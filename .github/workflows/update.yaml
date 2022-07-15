@@ -39,8 +39,8 @@ jobs:
         ./update.sh
 
         # If licenses.csv has changed, commit it.
-        diff=$(git diff-index HEAD | grep licenses.csv$)
-        if [[ $diff -eq 0 ]]; then
+        git diff-index HEAD | grep licenses.csv$
+        if [[ $? -eq 0 ]]; then
           # Delete creds before they're committed to the repo.
           rm gha-creds*.json || true
 
