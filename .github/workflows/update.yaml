@@ -1,0 +1,42 @@
+name: Update
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['main']
+    paths-ignore: ['README.md']
+  schedule:
+  - cron: '23 * * * *' # Hourly at X:23
+
+permissions:
+  id-token: write # Enable OIDC
+  contents: write
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+      with:
+        go-version: 1.18.x
+    # Install and setup gitsign so commits are signed by OIDC.
+    - uses: wlynch/gitsign-action@main
+
+    - uses: google-github-actions/auth@v0
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+    - uses: google-github-actions/setup-gcloud@v0.6.0
+      with:
+        project_id: jason-chainguard
+
+    - run: |
+        ./update.sh
+
+        git config user.name "Automated"
+        git config user.email "actions@users.noreply.github.com"
+        git add -A
+        timestamp=$(date -u)
+        git commit -m "Update: ${timestamp}" || exit 0
+        git push
+
