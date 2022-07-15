@@ -8,5 +8,8 @@ wc -l licenses.csv
 
 gzip -f -k licenses.csv
 
-go build ./cmd/golicenses-example && ls -lh golicenses-example licenses.*
-rm golicenses-example
+go build -o out ./cmd/golicenses-example
+ls -lh out licenses.*
+
+time ./out github.com/google/go-containerregistry | grep Apache-2.0
+rm out

@@ -6,14 +6,14 @@ on:
     branches: ['main']
     paths-ignore: ['README.md']
   schedule:
-  - cron: '23 * * * *' # Hourly at X:23
+  - cron: '23 1 * * 1' # Monday at 1:23 AM
 
 permissions:
   id-token: write # Enable OIDC
   contents: write
 
 jobs:
-  crawl:
+  update:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -26,7 +26,6 @@ jobs:
     - uses: google-github-actions/auth@v0
       with:
         credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-        credentials_file_path: /tmp  # outside workspace, so it's not committed.
     - uses: google-github-actions/setup-gcloud@v0.6.0
       with:
         project_id: jason-chainguard
@@ -34,10 +33,17 @@ jobs:
     - run: |
         ./update.sh
 
-        git config user.name "Automated"
-        git config user.email "actions@users.noreply.github.com"
-        git add -A
-        timestamp=$(date -u)
-        git commit -m "Update: ${timestamp}" || exit 0
-        git push
+        # If licenses.csv has changed, commit it.
+        diff=$(git diff-index HEAD | grep licenses.csv$)
+        if [[ $diff -eq 0 ]]; then
+          # Delete creds before they're committed to the repo.
+          rm gha-creds*.json || true
+
+          git config user.name "Automated"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "Update: ${timestamp}" || exit 0
+          git push
+        fi
 
