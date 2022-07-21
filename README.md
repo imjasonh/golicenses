@@ -5,6 +5,9 @@
 
 This is an **experimental** package to lookup the license for a Go package.
 
+This is not guaranteed to work, to update regularly, or to continue to have the same API.
+At a minimum, I'll probably change the repo name if I can think of something better.
+
 For example:
 
 ```golang
