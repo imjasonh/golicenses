@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("loading %d records took %s", golicenses.NumRecords, golicenses.LoadTime)
+	log.Printf("loading %d records took %s allocated %d", golicenses.NumRecords, golicenses.LoadTime, golicenses.Alloc)
 
 	start := time.Now()
 	golicenses.Get(os.Args[1])

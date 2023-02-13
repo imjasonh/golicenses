@@ -7,6 +7,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"io"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -26,6 +27,8 @@ var (
 	// It is populated after the first call to Get.
 	NumRecords int
 
+	Alloc uint64
+
 	ErrNotFound = errors.New("not found")
 )
 
@@ -36,7 +39,12 @@ var (
 // from memory.
 func Get(p string) (string, error) {
 	var lerr error
+
 	once.Do(func() {
+		var mem runtime.MemStats
+		runtime.ReadMemStats(&mem)
+		prev := mem.Alloc
+
 		start := time.Now()
 		m = map[string]string{}
 		gr, err := gzip.NewReader(bytes.NewReader(b))
@@ -59,6 +67,9 @@ func Get(p string) (string, error) {
 
 		LoadTime = time.Since(start)
 		NumRecords = len(m)
+
+		runtime.ReadMemStats(&mem)
+		Alloc = mem.Alloc - prev
 	})
 	if lerr != nil {
 		return "", lerr
