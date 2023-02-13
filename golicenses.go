@@ -10,13 +10,15 @@ import (
 	"runtime"
 	"sync"
 	"time"
+
+	"github.com/dghubble/trie"
 )
 
 //go:embed licenses.csv.gz
 var b []byte
 
 var (
-	m    map[string]string
+	t    *trie.RuneTrie
 	once sync.Once
 
 	// LoadTime is the time it took to load the dataset.
@@ -46,7 +48,7 @@ func Get(p string) (string, error) {
 		prev := mem.Alloc
 
 		start := time.Now()
-		m = map[string]string{}
+		t = trie.NewRuneTrie()
 		gr, err := gzip.NewReader(bytes.NewReader(b))
 		if err != nil {
 			lerr = err
@@ -54,6 +56,7 @@ func Get(p string) (string, error) {
 		}
 		r := csv.NewReader(gr)
 		r.FieldsPerRecord = 2
+		c := 0
 		for {
 			rec, err := r.Read()
 			if err == io.EOF {
@@ -62,11 +65,12 @@ func Get(p string) (string, error) {
 				lerr = err
 				return
 			}
-			m[rec[0]] = rec[1]
+			t.Put(rec[0], rec[1])
+			c++
 		}
 
 		LoadTime = time.Since(start)
-		NumRecords = len(m)
+		NumRecords = c
 
 		runtime.ReadMemStats(&mem)
 		Alloc = mem.Alloc - prev
@@ -75,9 +79,5 @@ func Get(p string) (string, error) {
 		return "", lerr
 	}
 
-	l, found := m[p]
-	if !found {
-		return "", ErrNotFound
-	}
-	return l, nil
+	return t.Get(p).(string), nil
 }
