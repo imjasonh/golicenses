@@ -20,8 +20,6 @@ jobs:
     - uses: actions/setup-go@v2
       with:
         go-version: 1.18.x
-    # Install and setup gitsign so commits are signed by OIDC.
-    - uses: wlynch/gitsign-action@main
 
     - uses: google-github-actions/auth@v0
       with:
@@ -53,5 +51,7 @@ jobs:
           timestamp=$(date -u)
           git commit -m "Update: ${timestamp}" || exit 0
           git push
+        else
+          echo "No changes to licenses.csv; no commit needed"
         fi
 
