@@ -39,9 +39,8 @@ jobs:
 
         set +e
 
-        # If licenses.csv has changed, commit it.
-        git diff-index HEAD | grep licenses.csv$
-        if [[ $? -eq 0 ]]; then
+        # If licenses.csv.gz has changed, commit it.
+        if git diff-index HEAD | grep licenses.csv.gz$; then
           # Delete creds before they're committed to the repo.
           rm gha-creds*.json || true
 
@@ -52,6 +51,6 @@ jobs:
           git commit -m "Update: ${timestamp}" || exit 0
           git push
         else
-          echo "No changes to licenses.csv; no commit needed"
+          echo "No changes to licenses; no commit needed"
         fi
 
